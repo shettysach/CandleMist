@@ -3,22 +3,22 @@ use leptos::{html::Div, *};
 
 const USER_MESSAGE_CLASS: &str = "max-w-md p-4 mb-5 self-end";
 const USER_MESSAGE_DARK_MODE_COLORS: &str =
-    "bg-gradient-to-r from-slate-900 to-slate-950 text-white";
+    "bg-gradient-to-r from-stone-800 to-stone-950 text-white";
 const USER_MESSAGE_LIGHT_MODE_COLORS: &str = "bg-blue-700 text-white";
 
 const MODEL_MESSAGE_CLASS: &str = "max-w-md p-4 mb-5 self-start";
 const MODEL_MESSAGE_DARK_MODE_COLORS: &str =
-    "bg-gradient-to-r from-red-700 to-amber-600 text-white";
+    "bg-gradient-to-r from-red-800 to-orange-600 text-white";
 const MODEL_MESSAGE_LIGHT_MODE_COLORS: &str = "bg-gray-200 text-black";
 
 const CHAT_AREA_CLASS: &str = "h-screen pb-24 w-full flex flex-col overflow-y-auto p-5";
-const CHAT_AREA_DARK_MODE_COLORS: &str = "border-slate-700 bg-slate-950";
-const CHAT_AREA_LIGHT_MODE_COLORS: &str = "border-gray-300 bg-gray-100";
+const CHAT_AREA_DARK_MODE_COLORS: &str = "bg-stone-950";
+const CHAT_AREA_LIGHT_MODE_COLORS: &str = "bg-gray-100";
 
 #[component]
 pub fn ChatArea(conversation: ReadSignal<Conversation>) -> impl IntoView {
     let dark_mode =
-        use_context::<ReadSignal<bool>>().expect("should be able to get dark mode state");
+        use_context::<ReadSignal<bool>>().expect("Should be able to get dark mode state");
 
     let user_message_class = Signal::derive(move || {
         if dark_mode.get() {

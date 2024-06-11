@@ -18,7 +18,6 @@ cfg_if! {
         //use leptos::*;
         //use tokio::runtime::Runtime;
 
-
         pub async fn ws(
             req: HttpRequest,
             body: Payload,
@@ -31,7 +30,7 @@ cfg_if! {
             use std::sync::Mutex;
             use tokio::sync::mpsc;
 
-            let (_send_inference, mut recieve_inference) = mpsc::channel::<String>(100);
+            let (send_inference, mut recieve_inference) = mpsc::channel::<String>(100);
 
             let mdl: ModelWeights = model.get_ref().clone();
             let tkn: Tokenizer = tokenizer.get_ref().clone();
@@ -58,7 +57,7 @@ cfg_if! {
                     );
 
                     for new_user_message in recieve_new_user_message {
-                        let _ = pipeline.infer(&new_user_message.to_string(), 50);
+                        let _ = pipeline.infer(&new_user_message.to_string(), 100, send_inference.clone());
                     }
                 });
 

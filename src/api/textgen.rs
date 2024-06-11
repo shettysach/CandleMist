@@ -52,9 +52,17 @@ impl TextGeneration {
         }
     }
 
-    pub fn infer(&mut self, prompt: &str, sample_len: usize) -> Result<()> {
-        use std::io::Write;
-        // self.tokenizer.clear();
+    pub fn infer(
+        &mut self,
+        prompt: &str,
+        sample_len: usize,
+        tx: tokio::sync::mpsc::Sender<String>,
+    ) -> Result<()> {
+        use tokio::runtime::Runtime;
+        let runtime = Runtime::new().expect("Tokio runtime creation error");
+
+        let prompt = format!("[INST] {prompt} [/INST]");
+
         let mut tokens = self
             .tokenizer
             .tokenizer()
@@ -62,13 +70,6 @@ impl TextGeneration {
             .map_err(E::msg)?
             .get_ids()
             .to_vec();
-
-        for &t in tokens.iter() {
-            if let Some(t) = self.tokenizer.next_token(t)? {
-                print!("{t}")
-            }
-        }
-        std::io::stdout().flush()?;
 
         let mut generated_tokens = 0usize;
         let eos_token = match self.tokenizer.get_token("</s>") {
@@ -80,8 +81,8 @@ impl TextGeneration {
         for index in 0..sample_len {
             let context_size = if index > 0 { 1 } else { tokens.len() };
             let start_pos = tokens.len().saturating_sub(context_size);
-            let ctxt = &tokens[start_pos..];
-            let input = Tensor::new(ctxt, &self.device)?.unsqueeze(0)?;
+            let context = &tokens[start_pos..];
+            let input = Tensor::new(context, &self.device)?.unsqueeze(0)?;
             let logits = &mut self.model.forward(&input, start_pos)?;
             let logits = logits.squeeze(0)?.squeeze(0)?.to_dtype(DType::F32)?;
 
@@ -103,17 +104,23 @@ impl TextGeneration {
                 break;
             }
             if let Some(t) = self.tokenizer.next_token(next_token)? {
-                print!("{t}");
-                std::io::stdout().flush()?;
+                let txc = tx.clone();
+                runtime.block_on(async move {
+                    txc.send(t).await.expect("issue sending on channel");
+                });
             }
         }
+
         let dt = start_gen.elapsed();
         if let Some(rest) = self.tokenizer.decode_rest().map_err(E::msg)? {
             print!("{rest}");
+            runtime.block_on(async move {
+                tx.send(rest).await.expect("issue sending on channel");
+            });
         }
-        std::io::stdout().flush()?;
+
         println!(
-            "\n{generated_tokens} tokens generated ({:.2} token/s)",
+            "> {generated_tokens} tokens generated ({:.2} token/s)",
             generated_tokens as f64 / dt.as_secs_f64(),
         );
         Ok(())
