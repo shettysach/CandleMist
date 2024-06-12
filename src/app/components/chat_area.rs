@@ -1,11 +1,11 @@
 use crate::model::conversation::Conversation;
 use leptos::{html::Div, *};
 
-const USER_MESSAGE_CLASS: &str = "max-w-md p-4 mb-5 self-end";
+const USER_MESSAGE_CLASS: &str = "max-w-lg p-4 mb-5 self-end";
 const USER_MESSAGE_DARK_MODE_COLORS: &str = "bg-gradient-to-r from-user_d to-user_l text-white";
 const USER_MESSAGE_LIGHT_MODE_COLORS: &str = "bg-blue-700 text-white";
 
-const MODEL_MESSAGE_CLASS: &str = "max-w-md p-4 mb-5 self-start";
+const MODEL_MESSAGE_CLASS: &str = "max-w-lg p-4 mb-5 self-start";
 const MODEL_MESSAGE_DARK_MODE_COLORS: &str = "bg-gradient-to-r from-model_d to-model_l text-white";
 const MODEL_MESSAGE_LIGHT_MODE_COLORS: &str = "bg-gray-200 text-black";
 

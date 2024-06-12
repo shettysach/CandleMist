@@ -14,6 +14,8 @@ module.exports = {
       'inp': '#24283b',
       'txt': '#9aa5ce',
       'background': '#1a1b26',
+      'hover_d': '#f7768e',
+      'hover_l': '#ff9e64'
     },
   },
   plugins: [],

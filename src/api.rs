@@ -4,15 +4,17 @@ cfg_if! {
     if #[cfg(feature = "ssr")] {
         use std::sync::Arc;
 
-        use candle_transformers::models::quantized_llama::ModelWeights;
-        use candle_core::Device;
-        use tokenizers::Tokenizer;
-        mod textgen;
-        use textgen::*;
-
         use actix_web::{web, web::Payload, Error, HttpRequest, HttpResponse};
         use actix_ws::Message as Msg;
         use futures::stream::{StreamExt};
+
+        use candle_transformers::models::quantized_llama::ModelWeights;
+        use candle_core::Device;
+        use tokenizers::Tokenizer;
+
+        pub mod loader;
+        mod textgen;
+        use textgen::*;
 
         pub async fn ws(
             req: HttpRequest,
