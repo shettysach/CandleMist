@@ -2,16 +2,16 @@ use leptos::{html::Input, *};
 
 const INPUT_AREA_CLASS: &str =
     "h-24 w-full fixed bottom-0 flex justify-center items-center p-5 border-t";
-const INPUT_AREA_CLASS_DARK: &str = "bg-neutral-950 border-zinc-700";
+const INPUT_AREA_CLASS_DARK: &str = "bg-inp";
 const INPUT_AREA_CLASS_LIGHT: &str = "bg-white border-gray-300";
 
 const TEXT_AREA_CLASS: &str = "w-2/3 p-4 border input-field";
-const TEXT_AREA_CLASS_DARK: &str = "bg-slate-900 border-zinc-700 text-white";
+const TEXT_AREA_CLASS_DARK: &str = "bg-txt";
 const TEXT_AREA_CLASS_LIGHT: &str = "border-gray-300 text-black";
 
 const BUTTON_CLASS: &str = "h-full p-4 cursor-pointer";
-const BUTTON_CLASS_DARK: &str = " bg-gradient-to-r from-orange-900 to-orange-800 text-white";
-const BUTTON_CLASS_LIGHT: &str = "bg-blue-500 text-white";
+const BUTTON_CLASS_DARK: &str = " bg-gradient-to-r from-button_d to-button_l text-white";
+const BUTTON_CLASS_LIGHT: &str = " bg-gradient-to-r from-button_d to-button_l text-white";
 
 #[component]
 pub fn TypeArea(send: Action<String, Result<(), ServerFnError>>) -> impl IntoView {

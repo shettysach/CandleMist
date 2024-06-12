@@ -2,7 +2,6 @@ use cfg_if::cfg_if;
 
 cfg_if! {
     if #[cfg(feature = "ssr")] {
-        //use std::convert::Infallible;
         use std::sync::Arc;
 
         use candle_transformers::models::quantized_llama::ModelWeights;
@@ -14,9 +13,6 @@ cfg_if! {
         use actix_web::{web, web::Payload, Error, HttpRequest, HttpResponse};
         use actix_ws::Message as Msg;
         use futures::stream::{StreamExt};
-
-        //use leptos::*;
-        //use tokio::runtime::Runtime;
 
         pub async fn ws(
             req: HttpRequest,
@@ -57,7 +53,7 @@ cfg_if! {
                     );
 
                     for new_user_message in recieve_new_user_message {
-                        let _ = pipeline.infer(&new_user_message.to_string(), 100, send_inference.clone());
+                        let _ = pipeline.infer(&new_user_message.to_string(), 150, send_inference.clone());
                     }
                 });
 

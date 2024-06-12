@@ -66,6 +66,7 @@ cfg_if! {
             dotenv().ok();
             let model_path = var("MODEL_PATH").expect("MODEL_PATH is not set");
             let mut file = std::fs::File::open(&model_path)?;
+            // TODO: Devices - CPU, GPU, etc
             let device = Device::Cpu;
             let model = gguf_file::Content::read(&mut file).map_err(|e| e.with_path(model_path))?;
 

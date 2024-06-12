@@ -63,6 +63,7 @@ impl TextGeneration {
 
         let prompt = format!("[INST] {prompt} [/INST]");
 
+        self.tokenizer.clear();
         let mut tokens = self
             .tokenizer
             .tokenizer()
@@ -82,6 +83,7 @@ impl TextGeneration {
             let context_size = if index > 0 { 1 } else { tokens.len() };
             let start_pos = tokens.len().saturating_sub(context_size);
             let context = &tokens[start_pos..];
+
             let input = Tensor::new(context, &self.device)?.unsqueeze(0)?;
             let logits = &mut self.model.forward(&input, start_pos)?;
             let logits = logits.squeeze(0)?.squeeze(0)?.to_dtype(DType::F32)?;
@@ -100,20 +102,21 @@ impl TextGeneration {
             let next_token = self.logits_processor.sample(&logits)?;
             tokens.push(next_token);
             generated_tokens += 1;
-            if next_token == eos_token {
-                break;
-            }
+
             if let Some(t) = self.tokenizer.next_token(next_token)? {
                 let txc = tx.clone();
                 runtime.block_on(async move {
                     txc.send(t).await.expect("issue sending on channel");
                 });
             }
+
+            if next_token == eos_token {
+                break;
+            }
         }
 
         let dt = start_gen.elapsed();
         if let Some(rest) = self.tokenizer.decode_rest().map_err(E::msg)? {
-            print!("{rest}");
             runtime.block_on(async move {
                 tx.send(rest).await.expect("issue sending on channel");
             });
