@@ -1,13 +1,16 @@
 ## CandleMist
 
-![Alt text](assets/image.png)
+<p align="center" width="100%">
+    <img src="assets/image.png" width=50% height=50%>
+</p>
 
 - Chatbot built in using Rust, in the frontend and the backend.
-- Made using `candle`, `leptos`, `actix` and `tokio`, and uses quantized Mistral 7B v0.1 GGUF models.
+- Made using `candle`, `leptos`, `actix` and `tokio`
+- Uses quantized Mistral 7B v0.1 GGUF models.
 
   #### Credits
 
-  - This is a fork of [Rusty_Llama](https://github.com/MoonKraken/rusty_llama)
+  - This is a fork of [MoonKraken/rusty_llama](https://github.com/MoonKraken/rusty_llama) by [Code to the Moon](https://www.youtube.com/watch?v=vAjle3c9Xqc).
   - This chatbot uses Mistral GGUF models and the [huggingface/candle](https://github.com/huggingface/candle) framework, unlike the original that uses GGML models and the `rustformers/llm` crate.
   - The frontend has some aesthetic changes, but the overall structure is the same.
 
@@ -34,8 +37,8 @@ cargo install trunk cargo-leptos
 
   #### Tested Models
 
-  - [mistral-7b-instruct-v0.1.Q4_K_M.gguf](https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-GGUF/tree/main)
-  - [dolphin-2.6-mistral-7B-GGUF](https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-GGUF/tree/main)
+  - [mistral-7b-instruct-v0.1.Q4_K_M.gguf](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/tree/main)
+  - [dolphin-2.6-mistral-7b.Q4_K_M.gguf](https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-GGUF/tree/main)
 
 - Download tokenizer.json and set the environment variable in `.env`.
   #### Tokenizer
