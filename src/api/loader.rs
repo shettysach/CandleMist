@@ -4,7 +4,7 @@ use candle_transformers::models::quantized_llama::ModelWeights;
 use dotenv::{dotenv, var};
 use tokenizers::Tokenizer;
 
-pub fn model_loader() -> Result<(ModelWeights, Tokenizer), E> {
+pub fn model_loader() -> Result<(ModelWeights, Tokenizer, Device), E> {
     dotenv().ok();
 
     let model_path = var("MODEL_PATH").expect("MODEL_PATH is not set");
@@ -18,7 +18,11 @@ pub fn model_loader() -> Result<(ModelWeights, Tokenizer), E> {
             elem_count * tensor.ggml_dtype.type_size() / tensor.ggml_dtype.block_size();
     }
 
-    let device = Device::Cpu;
+    let device = if var("METAL").is_ok() {
+        Device::new_metal(0)?
+    } else {
+        Device::cuda_if_available(0)?
+    };
 
     println!(
         "\n> Loading {:?} tensors - {}",
@@ -35,7 +39,7 @@ pub fn model_loader() -> Result<(ModelWeights, Tokenizer), E> {
     let tokenizer = Tokenizer::from_file(tokenizer_filename).map_err(E::msg)?;
     println!("> Successfully loaded tokenizer ✓\n");
 
-    Ok((model, tokenizer))
+    Ok((model, tokenizer, device))
 }
 
 fn format_size(size_in_bytes: usize) -> String {

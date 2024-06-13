@@ -34,8 +34,8 @@ pub fn App() -> impl IntoView {
             .expect("failed to retrieve origin hostname");
         let ws_url = format!("ws://{hostname}:3000/ws");
 
-        let connection = WebSocket::open(&format!("{ws_url}"))
-            .expect("failed to establish WebSocket connection");
+        let connection =
+            WebSocket::open(&ws_url.to_string()).expect("failed to establish WebSocket connection");
 
         let (sender, mut recv) = connection.split();
         spawn_local(async move {
@@ -65,10 +65,10 @@ pub fn App() -> impl IntoView {
             c.messages.push(user_message);
         });
 
-        let client2 = client.clone();
+        let client_clone = client.clone();
         let msg = new_message.to_string();
         async move {
-            client2
+            client_clone
                 .borrow_mut()
                 .as_mut()
                 .unwrap()
@@ -79,7 +79,7 @@ pub fn App() -> impl IntoView {
     });
 
     create_effect(move |_| {
-        if let Some(_) = send.input().get() {
+        if send.input().get().is_some() {
             let model_message = Message {
                 text: String::new(),
                 user: false,

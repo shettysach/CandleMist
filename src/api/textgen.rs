@@ -57,11 +57,10 @@ impl TextGeneration {
         prompt: &str,
         sample_len: usize,
         tx: tokio::sync::mpsc::Sender<String>,
-    ) -> Result<()> {
+    ) -> Result<String> {
         use tokio::runtime::Runtime;
         let runtime = Runtime::new().expect("Tokio runtime creation error");
-
-        let prompt = format!("[INST] {prompt} [/INST]");
+        let mut inference = String::new();
 
         self.tokenizer.clear();
         let mut tokens = self
@@ -75,9 +74,10 @@ impl TextGeneration {
         let mut generated_tokens = 0usize;
         let eos_token = match self.tokenizer.get_token("</s>") {
             Some(token) => token,
-            None => anyhow::bail!("cannot find the </s> token"),
+            None => anyhow::bail!("Cannot find the </s> token"),
         };
 
+        println!("\n> Generating tokens");
         let start_gen = std::time::Instant::now();
         for index in 0..sample_len {
             let context_size = if index > 0 { 1 } else { tokens.len() };
@@ -103,22 +103,24 @@ impl TextGeneration {
             tokens.push(next_token);
             generated_tokens += 1;
 
-            if let Some(t) = self.tokenizer.next_token(next_token)? {
-                let txc = tx.clone();
-                runtime.block_on(async move {
-                    txc.send(t).await.expect("issue sending on channel");
-                });
-            }
-
             if next_token == eos_token {
                 break;
+            }
+
+            if let Some(t) = self.tokenizer.next_token(next_token)? {
+                inference.push_str(&t);
+                let txc = tx.clone();
+                runtime.block_on(async move {
+                    txc.send(t).await.expect("Issue sending on channel");
+                });
             }
         }
 
         let dt = start_gen.elapsed();
         if let Some(rest) = self.tokenizer.decode_rest().map_err(E::msg)? {
+            inference.push_str(&rest);
             runtime.block_on(async move {
-                tx.send(rest).await.expect("issue sending on channel");
+                tx.send(rest).await.expect("Issue sending on channel");
             });
         }
 
@@ -126,6 +128,6 @@ impl TextGeneration {
             "> {generated_tokens} tokens generated ({:.2} token/s)",
             generated_tokens as f64 / dt.as_secs_f64(),
         );
-        Ok(())
+        Ok(inference)
     }
 }

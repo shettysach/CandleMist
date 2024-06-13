@@ -15,7 +15,6 @@ async fn main() -> std::io::Result<()> {
 
     use api::loader::model_loader;
     use api::ws;
-    use candle_core::Device;
 
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;
@@ -26,11 +25,11 @@ async fn main() -> std::io::Result<()> {
         actix_files::NamedFile::open_async("./style/output.css").await
     }
 
-    let (model, tokenizer) = model_loader().unwrap();
+    let (model, tokenizer, device) = model_loader().unwrap();
 
     let mdl = web::Data::new(model);
     let tkn = web::Data::new(tokenizer);
-    let dvc = web::Data::new(Device::Cpu);
+    let dvc = web::Data::new(device);
 
     HttpServer::new(move || {
         let leptos_options = &conf.leptos_options;
