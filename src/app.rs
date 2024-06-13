@@ -14,10 +14,6 @@ use crate::model::conversation::{Conversation, Message};
 #[component]
 pub fn App() -> impl IntoView {
     provide_meta_context();
-
-    let (dark_mode, _) = create_signal(true);
-    provide_context(dark_mode);
-
     let (conversation, set_conversation) = create_signal(Conversation::new());
 
     use futures::{SinkExt, StreamExt};
@@ -31,7 +27,7 @@ pub fn App() -> impl IntoView {
         let location = web_sys::window().unwrap().location();
         let hostname = location
             .hostname()
-            .expect("failed to retrieve origin hostname");
+            .expect("Failed to retrieve origin hostname");
         let ws_url = format!("ws://{hostname}:3000/ws");
 
         let connection =

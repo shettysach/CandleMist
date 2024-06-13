@@ -26,16 +26,18 @@ actix-rt = { version = "2.9.0", optional = true }
 futures = { version = "0.3.30", optional = true }
 tokio = "1.37.0"
 
+candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true, features = [
+    # "cuda", # uncomment for CUDA
+    # "metal", # uncomment for Metal
+] }
+candle-examples = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
+candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
+tokenizers = { version = "0.19.1", optional = true }
+
 anyhow = "1.0.82"
 dotenv = { version = "0.15.0", optional = true }
 fastrand = { version = "2.1.0", optional = true }
 env_logger = "0.11.3"
-
-candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
-candle-examples = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
-candle-nn = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
-candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true }
-tokenizers = { version = "0.19.1", optional = true }
 
 [features]
 csr = ["leptos/csr", "leptos_meta/csr", "leptos_router/csr"]
@@ -58,7 +60,6 @@ ssr = [
     "dep:futures",
     "dep:candle-core",
     "dep:candle-examples",
-    "dep:candle-nn",
     "dep:candle-transformers",
     "dep:tokenizers",
     "dep:dotenv",
