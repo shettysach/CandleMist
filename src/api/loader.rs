@@ -1,5 +1,5 @@
 use anyhow::Error as E;
-use candle_core::{quantized::gguf_file, Device};
+use candle_core::{quantized::gguf_file, utils::metal_is_available, Device};
 use candle_transformers::models::quantized_llama::ModelWeights;
 use dotenv::{dotenv, var};
 use tokenizers::Tokenizer;
@@ -18,7 +18,7 @@ pub fn model_loader() -> Result<(ModelWeights, Tokenizer, Device), E> {
             elem_count * tensor.ggml_dtype.type_size() / tensor.ggml_dtype.block_size();
     }
 
-    let device = if var("METAL").is_ok() {
+    let device = if metal_is_available() {
         Device::new_metal(0)?
     } else {
         Device::cuda_if_available(0)?

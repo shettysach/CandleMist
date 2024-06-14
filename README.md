@@ -4,8 +4,8 @@
     <img src="assets/image.png" width=50% height=50%>
 </p>
 
-- Chatbot built in using Rust, in the frontend and the backend.
-- Made using `candle`, `leptos`, `actix` and `tokio`
+- A simple chatbot built using Rust, in the frontend and the backend.
+- Made using `candle`, `leptos`, `actix`, `tokio` and TailwindCSS.
 - Uses quantized Mistral 7B v0.1 GGUF models.
 
   #### Credits
@@ -28,20 +28,31 @@ cargo install trunk cargo-leptos
 
 ### Hardware
 
-- For CUDA, uncomment the `cuda` feature for candle_core in Cargo.toml.
-- For Metal, uncomment the `metal` feature for candle_core in Cargo.toml and also uncomment the Metal environment variable in `.env`.
+- For CUDA, add the `cuda` feature for candle_core in Cargo.toml.
+
+```
+candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true, features = ["cuda"] }
+```
+
+- For Metal, add the `metal` feature for candle_core in Cargo.toml.
+
+```
+candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true, features = ["metal"] }
+```
 
 ### Model
 
-- Download any Mistral 7B v0.1 GGUF model and set the environment variable in `.env`.
+- Download any Mistral 7B v0.1 GGUF model and set the environment variable `MODEL_PATH` in `.env`.
 
   #### Tested Models
 
   - [mistral-7b-instruct-v0.1.Q4_K_M.gguf](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/tree/main)
   - [dolphin-2.6-mistral-7b.Q4_K_M.gguf](https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-GGUF/tree/main)
 
-- Download tokenizer.json and set the environment variable in `.env`.
+- Download tokenizer.json and set the environment variable in `TOKENIZER_PATH` in `.env`.
+
   #### Tokenizer
+
   - [Mistral-7B-v0.1/tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-v0.1/blob/main/tokenizer.json)
 
 ### TailwindCSS
