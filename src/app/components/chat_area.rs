@@ -1,5 +1,6 @@
 use crate::model::conversation::Conversation;
 use leptos::{html::Div, *};
+use markdown::to_html;
 
 const USER_MESSAGE_CLASS: &str = "max-w-lg p-4 mb-5 self-end";
 const USER_MESSAGE_COLOURS: &str = "bg-gradient-to-r from-user_d to-user_l text-white";
@@ -32,9 +33,7 @@ pub fn ChatArea(conversation: ReadSignal<Conversation>) -> impl IntoView {
             {
                 let class_str = if message.user { user_message_class.get() } else { model_message_class.get() };
                 view! {
-                    <div class={class_str}>
-                        {message.text.clone()}
-                    </div>
+                    <div class={class_str} inner_html = { to_html(&message.text) }/>
                 }
             }).collect::<Vec<_>>()
         } </div>

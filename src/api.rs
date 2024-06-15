@@ -17,7 +17,7 @@ cfg_if! {
         mod textgen;
         use textgen::*;
 
-        const CHAT_TEMPLATE: &str = "<s>[INST] Could you please assist me by answering some questions? Be brief and focused.[/INST]Sure, I will answer your questions to the best of my abilities.</s>";
+        const CHAT_TEMPLATE: &str = "<s>[INST] Could you please assist me by answering some questions? Be brief, focused and follow my instructions clearly. [/INST]Sure, I will answer your questions to the best of my abilities.</s>";
         const MAX_HISTORY: usize = 5;
 
         pub async fn ws(
@@ -62,7 +62,7 @@ cfg_if! {
                     for new_prompt in recieve_new_prompt {
                         let prompt = format_prompt(&new_prompt, &history);
                         let inference = pipeline
-                            .infer(&prompt, 150, send_inference.clone())
+                            .infer(&prompt, 250, send_inference.clone())
                             .expect("Error in inferencing");
                         history.push_back((new_prompt, inference));
 

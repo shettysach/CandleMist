@@ -1,8 +1,10 @@
 ## CandleMist
 
-<p align="center" width="100%">
-    <img src="assets/image.png" width=50% height=50%>
-</p>
+<div align: center;">
+    <img src="assets/image.png" width="45%">
+    &nbsp; &nbsp;
+    <img src="assets/image1.png" width="45%">
+</div>
 
 - A simple chatbot built using Rust, in the frontend and the backend.
 - Made using `candle`, `leptos`, `actix`, `tokio` and TailwindCSS.
@@ -13,6 +15,7 @@
   - This is a fork of [MoonKraken/rusty_llama](https://github.com/MoonKraken/rusty_llama) by [Code to the Moon](https://www.youtube.com/watch?v=vAjle3c9Xqc).
   - This chatbot uses Mistral GGUF models and the [huggingface/candle](https://github.com/huggingface/candle) framework, unlike the original that uses GGML models and the `rustformers/llm` crate.
   - The frontend has some aesthetic changes, but the overall structure is the same.
+  - Colours are from the Tokyo Night colorscheme.
 
 ## Setup Instructions
 
@@ -81,3 +84,6 @@ cargo leptos serve --release
 ```
 
 4. In your browser, navigate to [http://localhost:3000/?](http://localhost:3000/?)
+
+##### NOTE -
+- You can modify parameters such as temperature, top-k, top-p and maximum length in 'src/api.rs'.
