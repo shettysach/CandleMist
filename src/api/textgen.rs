@@ -8,8 +8,8 @@ use tokenizers::Tokenizer;
 
 pub struct TextGeneration {
     model: ModelWeights,
-    device: Device,
     tokenizer: TokenOutputStream,
+    device: Device,
     logits_processor: LogitsProcessor,
     repeat_penalty: f32,
     repeat_last_n: usize,
@@ -19,13 +19,13 @@ impl TextGeneration {
     pub fn new(
         model: ModelWeights,
         tokenizer: Tokenizer,
+        device: Device,
         seed: u64,
         temp: Option<f64>,
         top_p: Option<f64>,
         top_k: Option<usize>,
         repeat_penalty: f32,
         repeat_last_n: usize,
-        device: &Device,
     ) -> Self {
         let logits_processor = {
             let temperature = temp.unwrap_or(0.);
@@ -48,7 +48,7 @@ impl TextGeneration {
             logits_processor,
             repeat_penalty,
             repeat_last_n,
-            device: device.clone(),
+            device,
         }
     }
 
@@ -56,7 +56,7 @@ impl TextGeneration {
         &mut self,
         prompt: &str,
         sample_len: usize,
-        tx: tokio::sync::mpsc::Sender<String>,
+        tx: &tokio::sync::mpsc::Sender<String>,
     ) -> Result<String, ServerFnError> {
         use tokio::runtime::Runtime;
         let runtime = Runtime::new().expect("Tokio runtime creation error");

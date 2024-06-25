@@ -8,12 +8,12 @@
 
 - A simple chatbot built using Rust, in the frontend and the backend.
 - Made using `candle`, `leptos`, `actix`, `tokio` and TailwindCSS.
-- Uses quantized Mistral 7B v0.1 GGUF models.
+- Uses quantized Mistral 7B Instruct v0.1 GGUF models.
 
   #### Credits
 
   - This is a fork of [MoonKraken/rusty_llama](https://github.com/MoonKraken/rusty_llama) by [Code to the Moon](https://www.youtube.com/watch?v=vAjle3c9Xqc).
-  - This chatbot uses Mistral GGUF models and the [huggingface/candle](https://github.com/huggingface/candle) framework, unlike the original that uses GGML models and the `rustformers/llm` crate.
+  - This chatbot uses Mistral GGUF models and the [huggingface/candle](https://github.com/huggingface/candle) framework, unlike the original which uses GGML models and the `rustformers/llm` crate.
   - The frontend has some aesthetic changes, but the overall structure is the same.
   - Colours are from the Tokyo Night colorscheme.
 
@@ -45,7 +45,7 @@ candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.
 
 ### Model
 
-- Download any Mistral 7B v0.1 GGUF model and set the environment variable `MODEL_PATH` in `.env`.
+- Download any Mistral 7B Instruct v0.1 GGUF model and set the environment variable `MODEL_PATH` in `.env`.
 
   #### Tested Models
 
@@ -86,4 +86,4 @@ cargo leptos serve --release
 4. In your browser, navigate to [http://localhost:3000/?](http://localhost:3000/?)
 
 ##### NOTE -
-- You can modify parameters such as temperature, top-k, top-p and maximum length in 'src/api.rs'.
+- You can modify parameters such as temperature, seed, top-k, top-p, max history and max response length, and also modify the chat template in 'src/api.rs'.

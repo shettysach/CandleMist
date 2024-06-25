@@ -48,13 +48,13 @@ cfg_if! {
                     let mut pipeline = TextGeneration::new(
                         mdl,
                         tkn,
+                        dvc,
                         fastrand::u64(..),
-                        Some(0.),
+                        Some(0.1),
                         None,
                         None,
                         1.,
                         64,
-                        &dvc,
                     );
 
                     let mut history = VecDeque::new();
@@ -62,7 +62,7 @@ cfg_if! {
                     for new_prompt in recieve_new_prompt {
                         let prompt = format_prompt(&new_prompt, &history);
                         let inference = pipeline
-                            .infer(&prompt, 250, send_inference.clone())
+                            .infer(&prompt, 250, &send_inference)
                             .expect("Error in inferencing");
                         history.push_back((new_prompt, inference));
 
@@ -102,7 +102,7 @@ cfg_if! {
         }
 
         fn format_prompt(prompt: &String, history: &VecDeque<(String, String)>) -> String {
-            let result: String = history
+            let history: String = history
                 .iter()
                 .map(|(user_prompt, model_response)| {
                     format!("[INST] {user_prompt} [/INST]{model_response}</s>")
@@ -112,7 +112,7 @@ cfg_if! {
 
             let prompt = format!("[INST] {prompt} [/INST]");
 
-            CHAT_TEMPLATE.to_string() + &result + &prompt
+            format!("{CHAT_TEMPLATE} {history} {prompt}")
         }
     }
 }

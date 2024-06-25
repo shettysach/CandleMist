@@ -17,8 +17,8 @@ pub fn App() -> impl IntoView {
     let (conversation, set_conversation) = create_signal(Conversation::new());
 
     use futures::{SinkExt, StreamExt};
-    use gloo_net::websocket::futures::WebSocket;
-    use gloo_net::websocket::Message::Text as Txt;
+    use gloo_net::websocket::{futures::WebSocket, Message::Text};
+
     let client: Rc<RefCell<Option<SplitSink<WebSocket, gloo_net::websocket::Message>>>> =
         Default::default();
 
@@ -37,7 +37,7 @@ pub fn App() -> impl IntoView {
         spawn_local(async move {
             while let Some(msg) = recv.next().await {
                 match msg {
-                    Ok(Txt(msg)) => {
+                    Ok(Text(msg)) => {
                         set_conversation.update(move |c| {
                             c.messages.last_mut().unwrap().text.push_str(&msg);
                         });
@@ -61,14 +61,14 @@ pub fn App() -> impl IntoView {
             c.messages.push(user_message);
         });
 
-        let client_clone = client.clone();
+        let client2 = client.clone();
         let msg = new_message.to_string();
         async move {
-            client_clone
+            client2
                 .borrow_mut()
                 .as_mut()
                 .unwrap()
-                .send(Txt(msg.to_string()))
+                .send(Text(msg.to_string()))
                 .await
                 .map_err(|_| ServerFnError::ServerError("WebSocket issue".to_string()))
         }
