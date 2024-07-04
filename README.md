@@ -13,7 +13,7 @@
   #### Credits
 
   - This is a fork of [MoonKraken/rusty_llama](https://github.com/MoonKraken/rusty_llama) by [Code to the Moon](https://www.youtube.com/watch?v=vAjle3c9Xqc).
-  - This chatbot uses Mistral GGUF models and the [huggingface/candle](https://github.com/huggingface/candle) framework, unlike the original which uses GGML models and the `rustformers/llm` crate.
+  - This chatbot uses Mistral GGUF models and the [`huggingface/candle`](https://github.com/huggingface/candle) framework, which includes the `candle-transformers` crate, whereas the original uses GGML models and the [`rustformers/llm`](https://github.com/rustformers/llm) crate.
   - The frontend has some aesthetic changes, but the overall structure is the same.
   - Colours are from the Tokyo Night colorscheme.
 
@@ -60,7 +60,7 @@ candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.
 
 ### TailwindCSS
 
-- Install TailwindCSS with `npm install -D tailwindcss`
+- Install TailwindCSS with `npm install -D tailwindcss`.
 
 ### Run
 
@@ -86,4 +86,5 @@ cargo leptos serve --release
 4. In your browser, navigate to [http://localhost:3000/?](http://localhost:3000/?)
 
 ##### NOTE -
+
 - You can modify parameters such as temperature, seed, top-k, top-p, max history and max response length, and also modify the chat template in 'src/api.rs'.

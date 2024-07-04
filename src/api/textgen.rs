@@ -1,9 +1,11 @@
-use candle_core::Device;
-use candle_core::{DType, Tensor};
+use leptos::ServerFnError;
+use tokio::runtime::Runtime;
+use tokio::sync::mpsc::Sender;
+
+use candle_core::{Device, Tensor};
 use candle_examples::token_output_stream::TokenOutputStream;
 use candle_transformers::generation::{LogitsProcessor, Sampling};
 use candle_transformers::models::quantized_llama::ModelWeights;
-use leptos::ServerFnError;
 use tokenizers::Tokenizer;
 
 pub struct TextGeneration {
@@ -56,9 +58,8 @@ impl TextGeneration {
         &mut self,
         prompt: &str,
         sample_len: usize,
-        tx: &tokio::sync::mpsc::Sender<String>,
+        tx: &Sender<String>,
     ) -> Result<String, ServerFnError> {
-        use tokio::runtime::Runtime;
         let runtime = Runtime::new().expect("Tokio runtime creation error");
         let mut inference = String::new();
 
@@ -67,14 +68,18 @@ impl TextGeneration {
             .tokenizer
             .tokenizer()
             .encode(prompt, true)
-            .map_err(|_| ServerFnError::new("Prompt encoding error".to_string()))?
+            .map_err(|e| ServerFnError::new(e))?
             .get_ids()
             .to_vec();
 
         let mut generated_tokens = 0usize;
         let eos_token = match self.tokenizer.get_token("</s>") {
             Some(token) => token,
-            None => panic!("Cannot find eos token - </s>"),
+            None => {
+                return Err(ServerFnError::new(
+                    "Cannot find eos token - </s>".to_string(),
+                ))
+            }
         };
 
         println!("\n> Generating tokens");
@@ -86,7 +91,7 @@ impl TextGeneration {
 
             let input = Tensor::new(context, &self.device)?.unsqueeze(0)?;
             let logits = &mut self.model.forward(&input, start_pos)?;
-            let logits = logits.squeeze(0)?.squeeze(0)?.to_dtype(DType::F32)?;
+            let logits = logits.squeeze(0)?.squeeze(0)?;
 
             let logits = if self.repeat_penalty == 1. {
                 logits
@@ -109,6 +114,7 @@ impl TextGeneration {
 
             if let Some(t) = self.tokenizer.next_token(next_token)? {
                 inference.push_str(&t);
+
                 let txc = tx.clone();
                 runtime.block_on(async move {
                     txc.send(t).await.expect("Issue sending on channel");
@@ -120,7 +126,7 @@ impl TextGeneration {
         if let Some(rest) = self
             .tokenizer
             .decode_rest()
-            .map_err(|_| ServerFnError::new("Rest token decooding error".to_string()))?
+            .map_err(|e| ServerFnError::new(e))?
         {
             inference.push_str(&rest);
             runtime.block_on(async move {
@@ -132,6 +138,7 @@ impl TextGeneration {
             "> {generated_tokens} tokens generated ({:.2} token/s)",
             generated_tokens as f64 / dt.as_secs_f64(),
         );
+
         Ok(inference)
     }
 }

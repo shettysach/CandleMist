@@ -15,10 +15,11 @@ cfg_if! {
 
         pub mod loader;
         mod textgen;
+
         use textgen::*;
 
-        const CHAT_TEMPLATE: &str = "<s>[INST] Could you please assist me by answering some questions? Be brief, focused and follow my instructions clearly. [/INST]Sure, I will answer your questions to the best of my abilities.</s>";
-        const MAX_HISTORY: usize = 5;
+        const CHAT_TEMPLATE: &str = "[INST] Could you please assist me by answering some questions? Be brief, focused and follow my instructions clearly. [/INST]Sure, I will answer your questions to the best of my abilities.</s>";
+        const MAX_HISTORY: usize = 10;
 
         pub async fn ws(
             req: HttpRequest,
@@ -64,9 +65,10 @@ cfg_if! {
                         let inference = pipeline
                             .infer(&prompt, 250, &send_inference)
                             .expect("Error in inferencing");
+
                         history.push_back((new_prompt, inference));
 
-                        if history.len() == MAX_HISTORY {
+                        if history.len() >= MAX_HISTORY {
                             history.pop_front();
                         }
                     }
