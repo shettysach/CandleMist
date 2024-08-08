@@ -1,6 +1,6 @@
 ## CandleMist
 
-<div align: center;">
+<div "align: center;">
     <img src="assets/image.png" width="45%">
     &nbsp; &nbsp;
     <img src="assets/image1.png" width="45%">
@@ -32,16 +32,12 @@ cargo install trunk cargo-leptos
 ### Hardware
 
 - For CUDA, add the `cuda` feature for candle_core in Cargo.toml.
-
 ```
 candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true, features = ["cuda"] }
 ```
-
 - For Metal, add the `metal` feature for candle_core in Cargo.toml.
-
-```
-candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.6.0", optional = true, features = ["metal"] }
-```
+- For Intel's oneAPI Math Kernel Library, add the `mkl` feature for candle_core in Cargo.toml.
+- For Accelerate, add the `accelerate` feature for candle_core in Cargo.toml.
 
 ### Model
 
